@@ -32,18 +32,16 @@ jobs:
           echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
           echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
           echo "$PLAY_STORE_CONFIG_JSON" > /home/runner/work/Resumify/Resumify/service_key.json
-          echo "json_key_file(\"/home/runner/work/Resumify/Resumify/service_key.json\")" > /home/runner/work/Resumify/Resumify/android/fastlane/Appfile
-          echo "package_name(\"com.vivekkaushik.resumify\")" >> /home/runner/work/Resumify/Resumify/android/fastlane/Appfile
+          echo "json_key_file(\"/home/runner/work/Resumify/Resumify/service_key.json\")" > /home/runner/work/Resumify/Resumify/fastlane/Appfile
+          echo "package_name(\"com.vivekkaushik.resumify\")" >> /home/runner/work/Resumify/Resumify/fastlane/Appfile
         env:
           PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
           KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
           KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
           PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
-        working-directory: android
 
       - name: Fastlane Action
         uses: maierj/fastlane-action@v2.2.1
         with:
           lane: "deploy"
-          subdirectory: "android"
