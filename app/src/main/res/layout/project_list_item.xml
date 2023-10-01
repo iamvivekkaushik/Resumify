@@ -40,7 +40,7 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/projectTitleView" />
+            app:layout_constraintTop_toBottomOf="@id/projectTitleView" />
 
 
         <TextView
@@ -57,7 +57,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/roleView" />
+            app:layout_constraintTop_toBottomOf="@id/roleView" />
 
         <ImageView
             android:id="@+id/moreButton"

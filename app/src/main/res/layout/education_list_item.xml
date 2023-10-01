@@ -39,7 +39,7 @@
             android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/courseName" />
+            app:layout_constraintTop_toBottomOf="@id/courseName" />
 
         <TextView
             android:id="@+id/instituteName"
@@ -55,7 +55,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/year" />
+            app:layout_constraintTop_toBottomOf="@id/year" />
 
         <ImageView
             android:id="@+id/moreButton"
