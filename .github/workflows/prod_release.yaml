@@ -1,0 +1,49 @@
+name: Deploy Beta build to Play Store
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  fastlane-deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout App Repo
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '2.7.2'
+
+      - name: Configure Keystore
+        run: |
+          echo "$PLAY_STORE_UPLOAD_KEY" | base64 --decode > /home/runner/work/Resumify/Resumify/upload-keystore.jks
+          echo "storeFile=/home/runner/work/Resumify/Resumify/upload-keystore.jks" >> key.properties
+          echo "keyAlias=$KEYSTORE_KEY_ALIAS" >> key.properties
+          echo "storePassword=$KEYSTORE_STORE_PASSWORD" >> key.properties
+          echo "keyPassword=$KEYSTORE_KEY_PASSWORD" >> key.properties
+          echo "$PLAY_STORE_CONFIG_JSON" > /home/runner/work/Resumify/Resumify/service_key.json
+          echo "json_key_file(\"/home/runner/work/Resumify/Resumify/service_key.json\")" > /home/runner/work/Resumify/Resumify/android/fastlane/Appfile
+          echo "package_name(\"com.vivekkaushik.resumify\")" >> /home/runner/work/Resumify/Resumify/android/fastlane/Appfile
+        env:
+          PLAY_STORE_UPLOAD_KEY: ${{ secrets.PLAY_STORE_UPLOAD_KEY }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
+          PLAY_STORE_CONFIG_JSON: ${{ secrets.PLAY_STORE_CONFIG_JSON }}
+        working-directory: android
+
+      - name: Fastlane Action
+        uses: maierj/fastlane-action@v2.2.1
+        with:
+          lane: "deploy"
+          subdirectory: "android"
