@@ -44,6 +44,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements UserResumeAdapter.MenuButtonClickListener {
     private static final String TAG = "MainActivity";
@@ -139,15 +140,12 @@ public class MainActivity extends AppCompatActivity implements UserResumeAdapter
 
 
     private boolean saveToStorage(PdfDocument document, ResumeList resumeItem) {
-        File folderPath = new File(FOLDER_PATH);
-        if (!folderPath.exists()){
-            folderPath.mkdirs();
-        }
+        File folderPath = getExternalFilesDir("Resumify");
         //Write the document content
-        String name = resumeItem.getFileName().trim().replace(" ", "_");
-        String targetPdf = FOLDER_PATH + File.separator + name + ".pdf";
+        String name = String.valueOf(resumeItem.getTemplateId());
+        assert folderPath != null;
+        String targetPdf = folderPath.getPath() + File.separator + name + ".pdf";
         File filePath = new File(targetPdf);
-
 
         Toast.makeText(getApplicationContext(), "Generating PDF...", Toast.LENGTH_SHORT).show();
 
@@ -262,12 +260,10 @@ public class MainActivity extends AppCompatActivity implements UserResumeAdapter
     }
 
     private void shareResume(ResumeList resumeItem) {
-        String name = resumeItem.getFileName().trim().replace(" ", "_");
-        File file = new File(FOLDER_PATH + File.separator + name + ".pdf");
+        String name = String.valueOf(resumeItem.getTemplateId());
 
-        if (!file.exists()){
-            generateResume(resumeItem);
-        }
+        String path = Objects.requireNonNull(getExternalFilesDir("Resumify")).getPath();
+        File file = new File(path + File.separator + name + ".pdf");
 
         Uri fileUri = FileProvider.getUriForFile(getApplicationContext(), getApplicationContext().getPackageName() + ".fileProvider", file);
         Intent shareIntent = new Intent();
@@ -279,12 +275,16 @@ public class MainActivity extends AppCompatActivity implements UserResumeAdapter
     }
 
     private void openResume(ResumeList resumeItem) {
-        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            getPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE});
-            return;
-        }
-        String name = resumeItem.getFileName().trim().replace(" ", "_");
-        File file = new File(FOLDER_PATH + File.separator + name.trim().toLowerCase() + ".pdf");
+//        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+//            getPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE});
+//            return;
+//        }
+
+        String name = String.valueOf(resumeItem.getTemplateId());
+
+        String path = Objects.requireNonNull(getExternalFilesDir("Resumify")).getPath();
+        File file = new File(path + File.separator + name + ".pdf");
+
         if (!file.exists()) {
             generateResume(resumeItem);
         }
@@ -297,10 +297,10 @@ public class MainActivity extends AppCompatActivity implements UserResumeAdapter
     }
 
     private void generateResume(ResumeList resumeItem) {
-        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
-            getPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE});
-            return;
-        }
+//        if (!checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+//            getPermission(new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE});
+//            return;
+//        }
         switch (resumeItem.getTemplateId()) {
             case 1:
                 Template1 template = new Template1(this, QueryHelper.queryEverything(getContentResolver(), resumeItem.getResumeId()));
